@@ -3,13 +3,14 @@
 
 int main() {
     struct linkedList* list = inicialize();
-    insertAtEnd(list, 8);
-    insertAtEnd(list, 3);
-    insertAtEnd(list, 2);
-    insertAtEnd(list, 1);
-    insertAtEnd(list, 0);
-    insertAtEnd(list, -5);
-    insertElementAtPosition(list, -1, list->size);
+    insertElementAtEnd(list, 8);
+    insertElementAtEnd(list, 3);
+    insertElementAtEnd(list, 2);
+    insertElementAtEnd(list, 1);
+    insertElementAtEnd(list, 0);
+    insertElementAtEnd(list, -5);
+    showList(list);
+    removeElementAtPosition(list, 2);
     showList(list);
 
     free(list);

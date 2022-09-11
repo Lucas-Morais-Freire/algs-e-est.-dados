@@ -21,7 +21,7 @@ struct linkedList* inicialize() {
     return list;
 }
 
-void insertAtEnd(struct linkedList* list, int value) {
+void insertElementAtEnd(struct linkedList* list, int value) {
     if (list->size == 0) {
         list->head = (struct node*)malloc(sizeof(struct node));
         list->head->next = 0;
@@ -38,7 +38,7 @@ void insertAtEnd(struct linkedList* list, int value) {
     list->size++;
 }
 
-void removeLastValue(struct linkedList* list) {
+void removeLastElement(struct linkedList* list) {
     if (list->size == 0) {
         printf("this list is already empty.\n");
         exit(0);
@@ -51,8 +51,8 @@ void removeLastValue(struct linkedList* list) {
     list->size--;
 }
 
-int getValueAtPosition(struct linkedList* list, int pos) {
-    if (pos >= list->size) {
+int getElementAtPosition(struct linkedList* list, int pos) {
+    if (pos >= list->size || pos < 0) {
         printf("Invalid list position.\n");
         exit(0);
     }
@@ -64,9 +64,9 @@ int getValueAtPosition(struct linkedList* list, int pos) {
 }
 
 void insertElementAtPosition(struct linkedList* list, int value, int pos) {
-    if (pos > list->size) {
+    if (pos > list->size || pos < 0) {
         printf("Invalid list position.\n");
-        exit(0);
+        return;
     }
     struct node* target = (struct node*)malloc(sizeof(struct node));
     target->val = value;
@@ -88,12 +88,47 @@ void insertElementAtPosition(struct linkedList* list, int value, int pos) {
     }
 }
 
+void updateElementAtPosition(struct linkedList* list, int value, int pos) {
+    if (pos >= list->size || pos < 0) {
+        printf("Invalid list position.\n");
+        return;
+    }
+    struct node* temp = list->head;
+    for (int i = 0; i < pos; i++) {
+        temp = temp->next;
+    }
+    temp->val = value;
+}
+
+void removeElementAtPosition(struct linkedList* list, int pos) {
+    if (pos >= list->size || pos < 0) {
+        printf("Invalid list position.\n");
+        return;
+    }
+    struct node* temp = list->head;
+    if (pos == 0) {
+        list->head = list->head->next;
+        free(temp);
+        list->size--;
+        return;
+    }
+    for (int i = 1; i < pos; i++) {
+        temp = temp->next;
+    }
+    struct node* aux = temp->next;
+    temp->next = temp->next->next;
+    free(aux);
+    list->size--;
+}
+
 void showList(struct linkedList* list) {
     printf("(");
+    struct node* temp = list->head;
     for (int i = 0; i < list->size - 1; i++) {
-        printf("%d)->(", getValueAtPosition(list, i));
+        printf("%d)->(", temp->val);
+        temp =temp->next;
     }
-    printf("%d)\n", getValueAtPosition(list, list->size - 1));
+    printf("%d)\n", temp->val);
 }
 
 #endif //LINKEDLIST2_H
