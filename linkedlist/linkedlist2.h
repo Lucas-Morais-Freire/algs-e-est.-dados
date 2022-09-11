@@ -1,7 +1,8 @@
-#ifndef ARRAYLIST2_H
-#define ARRAYLIST2_H
+#ifndef LINKEDLIST2_H
+#define LINKEDLIST2_H
 
 #include <stdlib.h>
+#include <stdio.h>
 
 struct node {
     int val;
@@ -62,4 +63,37 @@ int getValueAtPosition(struct linkedList* list, int pos) {
     return temp->val;
 }
 
-#endif //ARRAYLIST2_H
+void insertElementAtPosition(struct linkedList* list, int value, int pos) {
+    if (pos > list->size) {
+        printf("Invalid list position.\n");
+        exit(0);
+    }
+    struct node* target = (struct node*)malloc(sizeof(struct node));
+    target->val = value;
+    struct node* temp = list->head;
+    if (pos == 0) {
+        target->next = list->head;
+        list->head = target;
+        list->size++;
+        return;
+    }
+    for (int i = 0; i < pos; i++) {
+        if (i == pos - 1) {
+            target->next = temp->next;
+            temp->next = target;
+            list->size++;
+            return;
+        }
+        temp = temp->next;
+    }
+}
+
+void showList(struct linkedList* list) {
+    printf("(");
+    for (int i = 0; i < list->size - 1; i++) {
+        printf("%d)->(", getValueAtPosition(list, i));
+    }
+    printf("%d)\n", getValueAtPosition(list, list->size - 1));
+}
+
+#endif //LINKEDLIST2_H
