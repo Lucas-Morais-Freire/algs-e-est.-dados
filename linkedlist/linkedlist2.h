@@ -1,8 +1,8 @@
 #ifndef LINKEDLIST2_H
 #define LINKEDLIST2_H
 
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 struct node {
     int val;
@@ -129,6 +129,17 @@ void showList(struct linkedList* list) {
         temp =temp->next;
     }
     printf("%d)\n", temp->val);
+}
+
+void deleteList(struct linkedList* list) {
+    struct node* temp = list->head;
+    struct node* aux;
+    for (int i = 0; i < list->size; i++) {
+        aux = temp->next;
+        free(temp);
+        temp = aux;
+    }
+    free(list);
 }
 
 #endif //LINKEDLIST2_H

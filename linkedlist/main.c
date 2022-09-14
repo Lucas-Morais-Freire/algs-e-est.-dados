@@ -13,6 +13,6 @@ int main() {
     removeElementAtPosition(list, 2);
     showList(list);
 
-    free(list);
+    deleteList(list);
     return 0;
 }
