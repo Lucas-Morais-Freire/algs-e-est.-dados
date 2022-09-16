@@ -70,18 +70,85 @@ void insertElementAtPosition(struct doublyLinkedList* list, int value, int pos) 
     } else if (pos == list->size) {
         insertElementAtEnd(list, value);
     } else {
+        struct node* temp;
         struct node* newNode = allocateNewNode(value);
-        if ((list->size - pos) << 1 > list->size) {
-            struct node* temp = list->head;
+        if (list->size > pos << 1) {
+            temp = list->head;
             for (int i = 0; i < pos; i++) {
                 temp = temp->next;
             }
-            newNode->prev = temp->prev;
-            newNode->next = temp;
-            temp->prev->next = newNode;
-            temp->prev = newNode;
+        } else {
+            temp = list->tail;
+            for (int i = list->size - 1; i > pos; i--) {
+                temp = temp->prev;
+            }
+        }
+        newNode->prev = temp->prev;
+        newNode->next = temp;
+        temp->prev->next = newNode;
+        temp->prev = newNode;
+        list->size++;
+    }
+}
+
+int getElementAtPosition(struct doublyLinkedList* list, int pos) {
+    if (pos >= list->size || pos < 0) {
+        printf("Invalid list position.");
+        exit(0);
+    }
+    if (pos == 0) {
+        return list->head->val;
+    } else if (pos == list->size - 1) {
+        return list->tail->val;
+    } else {
+        struct node* temp;
+        if (list->size > pos << 1) {
+            temp = list->head;
+            for (int i = 0; i < pos; i++) {
+                temp = temp->next;
+            }
+            return temp->val;
+        } else {
+            temp = list->tail;
+            for (int i = list->size - 1; i > pos; i--) {
+                temp = temp->prev;
+            }
+            return temp->val;
         }
     }
+}
+
+void removeElementAtPosition(struct doublyLinkedList* list, int pos) {
+    if (pos >= list->size || pos < 0) {
+        printf("Invalid list position.");
+        exit(0);
+    }
+    if (pos == 0) {
+        list->head = list->head->next;
+        free(list->head->prev);
+        list->head->prev = NULL;
+    } else if (pos == list->size - 1) {
+        list->tail = list->tail->prev;
+        free(list->tail->next);
+        list->tail->next = NULL;
+    } else {
+        struct node* temp;
+        if (list->size > pos << 1) {
+            temp = list->head;
+            for (int i = 0; i < pos; i++) {
+                temp = temp->next;
+            }
+        } else {
+            temp = list->tail;
+            for (int i = list->size - 1; i > pos; i--) {
+                temp = temp->prev;
+            }
+        }
+        temp->prev->next = temp->next;
+        temp->next->prev = temp->prev;
+        free(temp);
+    }
+    list->size--;
 }
 
 void showList(struct doublyLinkedList* list) {
