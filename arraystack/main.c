@@ -2,7 +2,7 @@
 
 int main() {
 
-    struct arrayStack* stack = inicialize(5);
+    struct arrayStack* stack;
 
     for(int i = 0; i < 20; i++) {
         putOnStack(&stack, i);

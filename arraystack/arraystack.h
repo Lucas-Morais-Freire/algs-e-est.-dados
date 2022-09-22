@@ -28,7 +28,7 @@ void duplicarCapacidade(struct arrayStack* stack) {
 //por causa da possibilidade de instanciacao usamos struct arrayStack**
 //se a pilha encher, duplique a capacidade do array
 void putOnStack(struct arrayStack** pToStack, int value) {
-    if (*pToStack == NULL) {
+    if ((*pToStack)->capacity == 0) {
         *pToStack = inicialize(10);
     }
     if ((*pToStack)->capacity == (*pToStack)->size) {
