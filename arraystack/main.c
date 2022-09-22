@@ -8,8 +8,13 @@ int main() {
         putOnStack(&stack, i);
         printf("capacity: %d\n", stack->capacity);
     }
-
     showStack(stack);
+    int last = takeFromStack(stack);
+    showStack(stack);
+    printf("%d\n\n", last);
+    last = takeFromStack(stack);
+    showStack(stack);
+    printf("%d\n\n", last);
 
     deleteStack(stack);
 

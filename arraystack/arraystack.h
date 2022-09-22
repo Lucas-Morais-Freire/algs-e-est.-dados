@@ -7,8 +7,8 @@
 
 struct arrayStack {
     int* elements;
-    int capacity;    //tam do array
-    int size;     //qtdade de elementos no array
+    int capacity;
+    int size;
 };
 
 struct arrayStack* inicialize(int cap) {
@@ -24,9 +24,6 @@ void duplicarCapacidade(struct arrayStack* stack) {
     stack->capacity *= 2;
 }
 
-//se a pilha estiver nula, instancie a pilha com tamanho 10
-//por causa da possibilidade de instanciacao usamos struct arrayStack**
-//se a pilha encher, duplique a capacidade do array
 void putOnStack(struct arrayStack** pToStack, int value) {
     if ((*pToStack)->capacity == 0) {
         *pToStack = inicialize(10);
@@ -38,19 +35,28 @@ void putOnStack(struct arrayStack** pToStack, int value) {
     (*pToStack)->size++;
 }
 
-//retornar true se a pilha for nula ou vazia
-bool vazia(struct arrayStack* pilha)  {
-    //TODO
+bool isEmpty(struct arrayStack* stack)  {
+    if (stack->capacity || stack->size) {
+        return true;
+    }
+    return false;
 }
 
-//decrementar qtdade se a pilha não estiver nula ou vazia
-void desempilhar(struct arrayStack* pilha) {
-    //TODO
+void removeFromStack(struct arrayStack* stack) {
+    if (!isEmpty(stack)) {
+        printf("This stack is empty.\n");
+        return;
+    }
+    stack->size--;
 }
 
-//retorne a constante INT_MIN se a pilha for nula ou vazia
-int desempilharRetornando(struct arrayStack* pilha) {
-    //TODO
+int takeFromStack(struct arrayStack* stack) {
+    if (!isEmpty(stack)) {
+        printf("This stack is empty.\n");
+        return INT_MIN;
+    }
+    stack->size--;
+    return stack->elements[stack->size];
 }
 
 //retorne a constante INT_MIN se a pilha for nula ou vazia
