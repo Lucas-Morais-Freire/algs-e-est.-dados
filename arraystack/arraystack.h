@@ -60,8 +60,12 @@ int takeFromStack(struct arrayStack* stack) {
 }
 
 //retorne a constante INT_MIN se a pilha for nula ou vazia
-int topo(struct arrayStack* pilha) {
-    //TODO
+int inspectTopOfStack(struct arrayStack* stack) {
+    if (!isEmpty(stack)) {
+        printf("This stack is empty.\n");
+        return INT_MIN;
+    }
+    return stack->elements[stack->size - 1];
 }
 
 void deleteStack(struct arrayStack* stack) {
