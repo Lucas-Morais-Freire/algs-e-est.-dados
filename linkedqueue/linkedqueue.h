@@ -53,6 +53,7 @@ void addToQueue(struct linkedQueue** pToQueue, int val) {
     }
     (*pToQueue)->back->next = newNode;
     (*pToQueue)->back = newNode;
+    (*pToQueue)->size++;
 }
 
 //retorne a constante INT_MIN se a fila for nula ou vazia
@@ -84,6 +85,16 @@ int inspectFrontOfQueue(struct linkedQueue* queue) {
         return INT_MIN;
     }
     return queue->front->val;
+}
+
+void showQueue(struct linkedQueue* queue) {
+    struct node* temp = queue->front;
+    printf("<-");
+    for (int i = 0; i < queue->size; i++) {
+        printf("[%d]", temp->val);
+        temp = temp->next;
+    }
+    printf("<-\n");
 }
 
 void deleteQueue(struct linkedQueue* queue) {
