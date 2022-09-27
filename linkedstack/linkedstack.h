@@ -104,4 +104,15 @@ void showStack(struct linkedStack* stack) {
     }
 }
 
+void deleteStack(struct linkedStack* stack) {
+    struct node* temp = stack->top;
+    struct node* aux;
+    for (int i = 0; i < stack->size; i++) {
+        aux = temp->next;
+        free(temp);
+        temp = aux;
+    }
+    free(stack);
+}
+
 #endif // LINKEDSTACK_H
