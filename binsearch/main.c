@@ -7,10 +7,10 @@
 bool binarySearch(struct arraylist* v, int start, int end, int target) {
     int middle = (start + end)/2;
 
-    if (target == v->vetor[middle]) {
-        return true;
-    } else if (start >= end) {
+    if (start > end) {
         return false;
+    } else if (target == v->vetor[middle]) {
+        return true;
     } else if (target < v->vetor[middle]) {
         return binarySearch(v, start, middle - 1, target);
     } else if (target > v->vetor[middle]) {
@@ -32,7 +32,7 @@ int main() {
 
     exibirLista(array);
 
-    if (binarySearch(array, 0, array->qtdade - 1, 1)) {
+    if (binarySearch(array, 0, array->qtdade - 1, 40)) {
         printf("ye\n");
     } else {
         printf("nah\n");
