@@ -12,6 +12,8 @@ int main() {
     showList(list);
     removeElementAtPosition(list, 5);
     showList(list);
+    invertList(list);
+    showList(list);
 
 
     deleteList(list);

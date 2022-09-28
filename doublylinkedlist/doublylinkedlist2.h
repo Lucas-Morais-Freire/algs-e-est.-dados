@@ -172,4 +172,17 @@ void deleteList(struct doublyLinkedList* list) {
     free(list);
 }
 
+void invertList(struct doublyLinkedList* list) {
+    struct node* temp = list->head;
+    list->head = list->tail;
+    list->tail = temp;
+    struct node* aux;
+    for (int i = 0; i < list->size; i++) {
+        aux = temp->next;
+        temp->next = temp->prev;
+        temp->prev = aux;
+        temp = temp->prev;
+    }
+}
+
 #endif //DOUBLYLINKEDLIST2_H
