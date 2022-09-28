@@ -80,4 +80,9 @@ void exibirLista(struct arraylist* lista) {
     printf("]\n");
 }
 
+void destruirLista(struct arraylist* lista) {
+    free(lista->vetor);
+    free(lista);
+}
+
 #endif //ARRAYLIST2_H
