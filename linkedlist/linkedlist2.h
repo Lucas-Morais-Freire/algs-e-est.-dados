@@ -122,6 +122,10 @@ void removeElementAtPosition(struct linkedList* list, int pos) {
 }
 
 void showList(struct linkedList* list) {
+    if (list->size == 0) {
+        printf("This list is empty.\n");
+        return;
+    }
     printf("(");
     struct node* temp = list->head;
     for (int i = 0; i < list->size - 1; i++) {

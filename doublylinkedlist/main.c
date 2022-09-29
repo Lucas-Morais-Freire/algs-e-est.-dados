@@ -2,19 +2,11 @@
 
 int main() {
     struct doublyLinkedList* list = inicialize();
-    for (int i = 0; i < 11; i++) {
-        insertElementAtEnd(list, i);
-    }
-    showList(list);
-    removeElementAtPosition(list, 0);
-    showList(list);
-    removeElementAtPosition(list, list->size - 1);
-    showList(list);
-    removeElementAtPosition(list, 5);
+    insertElementAtBeginning(list, 0);
+    insertElementAtBeginning(list, 1);
     showList(list);
     invertList(list);
     showList(list);
-
 
     deleteList(list);
     return 0;
