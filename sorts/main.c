@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
 
 #include <omp.h>
 
@@ -42,12 +43,17 @@ void selectionSort(int* v, int n) {
 void bubbleSort(int* v, int n) {
     int aux, j;
     for (int i = 0; i < n; i++) {
+        bool swapped = false;
         for (j = 0; j < n - 1 - i; j++) {
             if (v[j] > v[j + 1]) {
+                swapped = true;
                 aux = v[j];
                 v[j] = v[j + 1];
                 v[j + 1] = aux;
             }
+        }
+        if (!swapped) {
+            return;
         }
     }
 }
@@ -75,7 +81,7 @@ int main() {
     end = omp_get_wtime();
     printf("selectionSort runtime: %.15fs\n", end - start);
 
-    free(v);
+    free(v); free(w);
 
     return 0;
 }
