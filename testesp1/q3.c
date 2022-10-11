@@ -26,5 +26,7 @@ int main() {
 
     showList(list);
 
+    deleteList(list);
 
+    return 0;
 }
