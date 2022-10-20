@@ -5,7 +5,8 @@
 
 #include <omp.h>
 
-#define ASIZE 50000
+//#define ASIZE 50000
+#define ASIZE 17
 
 void printArray(int* v, int n) {
     printf("[");
@@ -58,6 +59,43 @@ void bubbleSort(int* v, int n) {
     }
 }
 
+void insertionSort(int* v, int n) {
+    int i, j, aux;
+    for (i = 1; i < n; i++) {
+        for (int j = i; j > 0; j--) {
+            if (v[j] < v[j - 1]) {
+                aux = v[j];
+                v[j] = v[j - 1];
+                v[j - 1] = aux;
+            }
+        }
+    }
+}
+
+void merge(int* v1, int* v2, int* v, int n1, int n2, int n) {
+    int i1, i2, i;
+    i = i1 = i2 = 0;
+    for (i = 0; i < n; i++) {
+        if (i1 == n1) {
+            v[i] = v2[i2];
+            i2++;
+        } else if (i2 == n2) {
+            v[i] = v1[i1];
+            i1++;
+        } else if (v1[i1] > v2[i2]) {
+            v[i] = v2[i2];
+            i2++;
+        } else {
+            v[i] = v1[i1];
+            i1++;
+        }
+    }
+}
+
+void mergeSort(int* v, int n) {
+    
+}
+
 int main() {
     srand(time(NULL));
 
@@ -67,21 +105,36 @@ int main() {
     for (int i = 0; i < ASIZE; i++) {
         v[i] = rand() % ASIZE;
     }
-    int* w = malloc(ASIZE*sizeof(int));
+
+    /*int* w = malloc(ASIZE*sizeof(int));
+    int* u = malloc(ASIZE*sizeof(int));
 
     copyArray(v, w, ASIZE);
+    copyArray(v, u, ASIZE);
     
     start = omp_get_wtime();
-    bubbleSort(v, ASIZE);
+    insertionSort(v, ASIZE);
     end = omp_get_wtime();
-    printf("bubbleSort runtime: %.15fs\n", end - start);
+    printf("insertionSort runtime: %.15fs\n", end - start);
 
     start = omp_get_wtime();
     selectionSort(w, ASIZE);
     end = omp_get_wtime();
     printf("selectionSort runtime: %.15fs\n", end - start);
 
-    free(v); free(w);
+    start = omp_get_wtime();
+    bubbleSort(u, ASIZE);
+    end = omp_get_wtime();
+    printf("bubbleSort runtime: %.15fs\n", end - start); */
+
+    printArray(v, ASIZE);
+    start = omp_get_wtime();
+    mergeSort(v, ASIZE);
+    end = omp_get_wtime();
+    printf("mergeSort runtime: %.15fs\n", end - start);
+    printArray(v, ASIZE);
+
+    free(v);// free(w); free(u);
 
     return 0;
 }
