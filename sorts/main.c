@@ -6,7 +6,7 @@
 #include <omp.h>
 
 //#define ASIZE 50000
-#define ASIZE 17
+#define ASIZE 20
 
 void printArray(int* v, int n) {
     printf("[");
@@ -93,7 +93,13 @@ void merge(int* v1, int* v2, int* v, int n1, int n2, int n) {
 }
 
 void mergeSort(int* v, int n) {
-    
+    if (n == 1) {
+        return;
+    } else {
+        int* v1 = malloc(n/2*sizeof(int));
+        int* v2 = malloc((n - n/2)*sizeof(int));
+        for (int i = 0; i < n/2)
+    }
 }
 
 int main() {
