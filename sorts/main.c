@@ -125,7 +125,7 @@ void mergeSort(int* v, int n) {
 }
 
 void quickSort(int* v, int s, int f) {
-    if (s == f) {
+    if (s >= f) {
         return;
     } else {
         int p = v[s]; int l = s; int r = f; int cs = 0;
@@ -145,14 +145,8 @@ void quickSort(int* v, int s, int f) {
             }
         }
         v[r] = p;
-        if (r == f) {
-            quickSort(v, s, f - 1);
-        } else if (r == s) {
-            quickSort(v, s + 1, f);
-        } else {
-            quickSort(v, s, r - 1);
-            quickSort(v, r + 1, f);
-        }
+        quickSort(v, s, r - 1);
+        quickSort(v, r + 1, f);
     }
 }
 
