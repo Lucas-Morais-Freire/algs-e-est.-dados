@@ -5,8 +5,8 @@
 
 #include <omp.h>
 
-//#define ASIZE 50000
-#define ASIZE 20
+#define ASIZE 50000
+//#define ASIZE 20
 
 void printArray(int* v, int n) {
     printf("[");
@@ -75,7 +75,7 @@ void insertionSort(int* v, int n) {
 void merge(int* v1, int* v2, int* v, int n1, int n2, int n) {
     int i1, i2, i;
     i = i1 = i2 = 0;
-    for (i = 0; i < n; i++) {
+    while (i < n) {
         if (i1 == n1) {
             v[i] = v2[i2];
             i2++;
@@ -89,6 +89,7 @@ void merge(int* v1, int* v2, int* v, int n1, int n2, int n) {
             v[i] = v1[i1];
             i1++;
         }
+        i++;
     }
 }
 
@@ -98,7 +99,18 @@ void mergeSort(int* v, int n) {
     } else {
         int* v1 = malloc(n/2*sizeof(int));
         int* v2 = malloc((n - n/2)*sizeof(int));
-        for (int i = 0; i < n/2)
+        for (int i = 0; i < n/2; i++) {
+            v1[i] = v[i];
+        }
+        for (int i = n/2; i < n; i++) {
+            v2[i - n/2] = v[i];
+        }
+
+        mergeSort(v1, n/2);
+        mergeSort(v2, n - n/2);
+
+        merge(v1, v2, v, n/2, n - n/2, n);
+        free(v1); free(v2);
     }
 }
 
@@ -112,11 +124,13 @@ int main() {
         v[i] = rand() % ASIZE;
     }
 
-    /*int* w = malloc(ASIZE*sizeof(int));
+    int* w = malloc(ASIZE*sizeof(int));
     int* u = malloc(ASIZE*sizeof(int));
+    int* x = malloc(ASIZE*sizeof(int));
 
     copyArray(v, w, ASIZE);
     copyArray(v, u, ASIZE);
+    copyArray(v, x, ASIZE);
     
     start = omp_get_wtime();
     insertionSort(v, ASIZE);
@@ -131,16 +145,14 @@ int main() {
     start = omp_get_wtime();
     bubbleSort(u, ASIZE);
     end = omp_get_wtime();
-    printf("bubbleSort runtime: %.15fs\n", end - start); */
+    printf("bubbleSort runtime: %.15fs\n", end - start);
 
-    printArray(v, ASIZE);
     start = omp_get_wtime();
     mergeSort(v, ASIZE);
     end = omp_get_wtime();
     printf("mergeSort runtime: %.15fs\n", end - start);
-    printArray(v, ASIZE);
 
-    free(v);// free(w); free(u);
+    free(v); free(w); free(u); free(x);
 
     return 0;
 }
