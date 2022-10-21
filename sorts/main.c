@@ -18,6 +18,16 @@ void printArray(int* v, int n) {
     printf("%d]\n", v[i]);
 }
 
+void verify(int* v, int n) {
+    for (int i = 1; i < n; i++) {
+        if (v[i] < v[i - 1]) {
+            printf("This list is unordered.\n");
+            return;
+        }
+    }
+    printf("This list is ordered.\n");
+}
+
 void copyArray(int* sender, int* receiver, int n) {
     for (int i = 0; i < n; i++) {
         receiver[i] = sender[i];
@@ -114,6 +124,44 @@ void mergeSort(int* v, int n) {
     }
 }
 
+void quickSort(int* v, int s, int f) {
+    if (s == f) {
+        return;
+    } else {
+        int p = v[s]; int l = s; int r = f; int cs = 0;
+        while (l != r) {
+            switch(cs) {
+                case 0:
+                    if (v[r] < p) {
+                        v[l] = v[r];
+                        l++;
+                        cs = 1;
+                    } else {
+                        r--;
+                    }
+                    break;
+                case 1:
+                    if (v[l] > p) {
+                        v[r] = v[l];
+                        r--;
+                        cs = 0;
+                    } else {
+                        l++;
+                    }
+            }
+        }
+        v[r] = p;
+        if (r == f) {
+            quickSort(v, s, f - 1);
+        } else if (r == s) {
+            quickSort(v, s + 1, f);
+        } else {
+            quickSort(v, s, r - 1);
+            quickSort(v, r + 1, f);
+        }
+    }
+}
+
 int main() {
     srand(time(NULL));
 
@@ -127,32 +175,44 @@ int main() {
     int* w = malloc(ASIZE*sizeof(int));
     int* u = malloc(ASIZE*sizeof(int));
     int* x = malloc(ASIZE*sizeof(int));
+    int* y = malloc(ASIZE*sizeof(int));
 
     copyArray(v, w, ASIZE);
     copyArray(v, u, ASIZE);
     copyArray(v, x, ASIZE);
+    copyArray(v, y, ASIZE);
     
     start = omp_get_wtime();
     insertionSort(v, ASIZE);
     end = omp_get_wtime();
     printf("insertionSort runtime: %.15fs\n", end - start);
+    verify(v, ASIZE);
 
     start = omp_get_wtime();
     selectionSort(w, ASIZE);
     end = omp_get_wtime();
     printf("selectionSort runtime: %.15fs\n", end - start);
+    verify(w, ASIZE);
 
     start = omp_get_wtime();
     bubbleSort(u, ASIZE);
     end = omp_get_wtime();
     printf("bubbleSort runtime: %.15fs\n", end - start);
+    verify(u, ASIZE);
 
     start = omp_get_wtime();
-    mergeSort(v, ASIZE);
+    mergeSort(x, ASIZE);
     end = omp_get_wtime();
     printf("mergeSort runtime: %.15fs\n", end - start);
+    verify(x, ASIZE);
 
-    free(v); free(w); free(u); free(x);
+    start = omp_get_wtime();
+    quickSort(y, 0, ASIZE - 1);
+    end = omp_get_wtime();
+    printf("quickSort runtime: %.15fs\n", end - start);
+    verify(y, ASIZE);
+
+    free(v); free(w); free(u); free(x); free(y);
 
     return 0;
 }
