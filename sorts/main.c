@@ -5,7 +5,7 @@
 
 #include <omp.h>
 
-#define ASIZE 50000
+#define ASIZE 100001
 //#define ASIZE 20
 
 void printArray(int* v, int n) {
@@ -130,24 +130,18 @@ void quickSort(int* v, int s, int f) {
     } else {
         int p = v[s]; int l = s; int r = f; int cs = 0;
         while (l != r) {
-            switch(cs) {
-                case 0:
-                    if (v[r] < p) {
-                        v[l] = v[r];
-                        l++;
-                        cs = 1;
-                    } else {
-                        r--;
-                    }
-                    break;
-                case 1:
-                    if (v[l] > p) {
-                        v[r] = v[l];
-                        r--;
-                        cs = 0;
-                    } else {
-                        l++;
-                    }
+            if (v[r] < p && cs == 0) {
+                v[l] = v[r];
+                l++;
+                cs = 1;
+            } else if (cs == 0) {
+                r--;
+            } else if (v[l] > p && cs == 1) {
+                v[r] = v[l];
+                r--;
+                cs = 0;
+            } else {
+                l++;
             }
         }
         v[r] = p;
@@ -211,6 +205,8 @@ int main() {
     end = omp_get_wtime();
     printf("quickSort runtime: %.15fs\n", end - start);
     verify(y, ASIZE);
+
+    //qsort();
 
     free(v); free(w); free(u); free(x); free(y);
 
