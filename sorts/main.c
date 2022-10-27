@@ -127,27 +127,58 @@ void mergeSort(int* v, int n) {
 void quickSort(int* v, int s, int f) {
     if (s >= f) {
         return;
-    } else {
-        int p = v[s]; int l = s; int r = f; int cs = 0;
-        while (l != r) {
-            if (v[r] < p && cs == 0) {
-                v[l] = v[r];
-                l++;
-                cs = 1;
-            } else if (cs == 0) {
-                r--;
-            } else if (v[l] > p && cs == 1) {
-                v[r] = v[l];
-                r--;
-                cs = 0;
-            } else {
-                l++;
-            }
-        }
-        v[r] = p;
-        quickSort(v, s, r - 1);
-        quickSort(v, r + 1, f);
     }
+    int p = v[s]; int l = s; int r = f; int cs = 0;
+    while (l != r) {
+        if (v[r] < p && cs == 0) {
+            v[l] = v[r];
+            l++;
+            cs = 1;
+        } else if (cs == 0) {
+            r--;
+        } else if (v[l] > p) {
+            v[r] = v[l];
+            r--;
+            cs = 0;
+        } else {
+            l++;
+        }
+    }
+    v[r] = p;
+    quickSort(v, s, r - 1);
+    quickSort(v, r + 1, f);
+}
+
+void countingSort(int* v, int n) {
+    int min = v[0]; int max = v[0]; int i;
+
+    for (i = 0; i < n; i++) {
+        if (v[i] > max) {
+            max = v[i];
+        }
+        if (v[i] < min) {
+            min = v[i];
+        }
+    }
+
+    int* c = calloc(max - min + 1, sizeof(int));
+
+    for (i = 0; i < n; i++) {
+        c[v[i] - min]++;
+    }
+
+    printArray(c, max - min + 1);
+
+    i = 0; int j = 0;
+    while (i < max - min + 1) {
+        if (c[i] == 0) {
+            i++;
+        } else {
+            v[j] = i + min;
+            c[i]--; j++;
+        }
+    }
+    free(c);
 }
 
 int main() {
@@ -155,12 +186,14 @@ int main() {
 
     double start, end;
 
-    int* v = malloc(ASIZE*sizeof(int));
+    int v[20] = {8, 2, 6, 17, 1, 17, 14, 14, 1, 10, 15, 15, 3, 6, 1, 13, 19, 18, 2, 4};
+
+    /* int* v = malloc(ASIZE*sizeof(int));
     for (int i = 0; i < ASIZE; i++) {
         v[i] = rand() % ASIZE;
-    }
+    } */
 
-    int* w = malloc(ASIZE*sizeof(int));
+    /* int* w = malloc(ASIZE*sizeof(int));
     int* u = malloc(ASIZE*sizeof(int));
     int* x = malloc(ASIZE*sizeof(int));
     int* y = malloc(ASIZE*sizeof(int));
@@ -199,10 +232,17 @@ int main() {
     end = omp_get_wtime();
     printf("quickSort runtime: %.15fs\n", end - start);
     verify(y, ASIZE);
+ */
+    verify(v, ASIZE);
+    //printArray(v, ASIZE);
+    start = omp_get_wtime();
+    countingSort(v, ASIZE);
+    end = omp_get_wtime();
+    printf("countingSort runtime: %.15fs\n", end - start);
+    verify(v, ASIZE);
+    //printArray(v, ASIZE);
 
-    //qsort();
-
-    free(v); free(w); free(u); free(x); free(y);
+    //free(v);// free(w); free(u); free(x); free(y);
 
     return 0;
 }
