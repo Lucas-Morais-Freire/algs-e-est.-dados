@@ -72,7 +72,7 @@ void bubbleSort(int* v, int n) {
 void insertionSort(int* v, int n) {
     int i, j, aux;
     for (i = 1; i < n; i++) {
-        for (int j = i; j > 0; j--) {
+        for (j = i; j > 0; j--) {
             if (v[j] < v[j - 1]) {
                 aux = v[j];
                 v[j] = v[j - 1];
@@ -130,11 +130,11 @@ void quickSort(int* v, int s, int f) {
     }
     int p = v[s]; int l = s; int r = f; int cs = 0;
     while (l != r) {
-        if (v[r] < p && cs == 0) {
+        if (v[r] < p && !cs) {
             v[l] = v[r];
             l++;
             cs = 1;
-        } else if (cs == 0) {
+        } else if (!cs) {
             r--;
         } else if (v[l] > p) {
             v[r] = v[l];
@@ -167,11 +167,9 @@ void countingSort(int* v, int n) {
         c[v[i] - min]++;
     }
 
-    printArray(c, max - min + 1);
-
     i = 0; int j = 0;
     while (i < max - min + 1) {
-        if (c[i] == 0) {
+        if (!c[i]) {
             i++;
         } else {
             v[j] = i + min;
@@ -181,27 +179,63 @@ void countingSort(int* v, int n) {
     free(c);
 }
 
+int partition(int* v, int s, int f) {
+
+    int pIndex = rand() % (f - s + 1) + s;
+
+    int temp = v[f];
+    v[f] = v[pIndex];
+    v[pIndex] = temp;
+
+    pIndex = s;
+    for (int i = s; i < f; i++) {
+        if (v[i] <= v[f]) {
+            temp = v[i];
+            v[i] = v[pIndex];
+            v[pIndex] = temp;
+
+            pIndex++;
+        }
+    }
+
+    temp = v[f];
+    v[f] = v[pIndex];
+    v[pIndex] = temp;
+
+    return pIndex;
+}
+
+void quickSort2(int* v, int s, int f) {
+    if (f > s) {
+        int pIndex = partition(v, s, f);
+        quickSort2(v, s, pIndex - 1);
+        quickSort2(v, pIndex + 1, f);
+    }
+}
+
 int main() {
     srand(time(NULL));
 
     double start, end;
 
-    int v[20] = {8, 2, 6, 17, 1, 17, 14, 14, 1, 10, 15, 15, 3, 6, 1, 13, 19, 18, 2, 4};
-
-    /* int* v = malloc(ASIZE*sizeof(int));
+    int* v = malloc(ASIZE*sizeof(int));
     for (int i = 0; i < ASIZE; i++) {
         v[i] = rand() % ASIZE;
-    } */
+    }
 
-    /* int* w = malloc(ASIZE*sizeof(int));
+    int* w = malloc(ASIZE*sizeof(int));
     int* u = malloc(ASIZE*sizeof(int));
     int* x = malloc(ASIZE*sizeof(int));
     int* y = malloc(ASIZE*sizeof(int));
+    int* z = malloc(ASIZE*sizeof(int));
+    int* r = malloc(ASIZE*sizeof(int));
 
     copyArray(v, w, ASIZE);
     copyArray(v, u, ASIZE);
     copyArray(v, x, ASIZE);
     copyArray(v, y, ASIZE);
+    copyArray(v, z, ASIZE);
+    copyArray(v, r, ASIZE);
     
     start = omp_get_wtime();
     insertionSort(v, ASIZE);
@@ -210,16 +244,16 @@ int main() {
     verify(v, ASIZE);
 
     start = omp_get_wtime();
-    selectionSort(w, ASIZE);
+    selectionSort(u, ASIZE);
     end = omp_get_wtime();
     printf("selectionSort runtime: %.15fs\n", end - start);
-    verify(w, ASIZE);
+    verify(u, ASIZE);
 
     start = omp_get_wtime();
-    bubbleSort(u, ASIZE);
+    bubbleSort(w, ASIZE);
     end = omp_get_wtime();
     printf("bubbleSort runtime: %.15fs\n", end - start);
-    verify(u, ASIZE);
+    verify(w, ASIZE);
 
     start = omp_get_wtime();
     mergeSort(x, ASIZE);
@@ -232,17 +266,20 @@ int main() {
     end = omp_get_wtime();
     printf("quickSort runtime: %.15fs\n", end - start);
     verify(y, ASIZE);
- */
-    verify(v, ASIZE);
-    //printArray(v, ASIZE);
+
     start = omp_get_wtime();
-    countingSort(v, ASIZE);
+    countingSort(z, ASIZE);
     end = omp_get_wtime();
     printf("countingSort runtime: %.15fs\n", end - start);
-    verify(v, ASIZE);
-    //printArray(v, ASIZE);
+    verify(z, ASIZE);
 
-    //free(v);// free(w); free(u); free(x); free(y);
+    start = omp_get_wtime();
+    quickSort2(r, 0, ASIZE - 1);
+    end = omp_get_wtime();
+    printf("quickSort2 runtime: %.15fs\n", end - start);
+    verify(r, ASIZE);
+
+    free(v); free(w); free(u); free(x); free(y); free(z); free(r);
 
     return 0;
 }
