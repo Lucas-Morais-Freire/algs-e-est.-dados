@@ -3,6 +3,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
+bool printedFirst = false;
 
 struct bstnode {
     int val;
@@ -85,6 +88,99 @@ void bst_insertIter(struct bstree* tree, int value) {
     struct bstnode* newNode = bst_newNode(value);
     bst_insertNodeIter(&(tree->root), newNode);
     tree->size++;
+}
+
+bool bst_searchFromRootRec(struct bstnode* root, int value) {
+    if (root->val == value) {
+        return true;
+    } else if (root->r != NULL && value >= root->val) {
+        return bst_searchFromRootRec(root->r, value);
+    } else if (root->l != NULL && value < root->val) {
+        return bst_searchFromRootRec(root->l, value);
+    } else {
+        return false;
+    }
+}
+
+bool bst_searchRec(struct bstree* tree, int value) {
+    struct bstnode* root = tree->root;
+    return bst_searchFromRootRec(root, value);
+}
+
+bool bst_searchFromRootIter(struct bstnode* root, int value) {
+    while(1) {
+        if (root->val == value) {
+            return true;
+        } else if (root->r != NULL && value >= root->val) {
+            root = root->r;
+        } else if (root->l != NULL && value < root->val) {
+            root = root->l;
+        } else {
+            return false;
+        }
+    }
+}
+
+bool bst_searchIter(struct bstree* tree, int value) {
+    struct bstnode* root = tree->root;
+    return bst_searchFromRootIter(root, value);
+}
+
+void bst_printPreOrderFromRoot(struct bstnode* root) {
+    if (root != NULL) {
+        if (!printedFirst) {
+            printf("%d", root->val);
+            printedFirst = true;
+        } else {
+            printf(", %d", root->val);
+        }
+        bst_printPreOrderFromRoot(root->l);
+        bst_printPreOrderFromRoot(root->r);
+    }
+}
+
+void bst_printPreOrder(struct bstree* tree) {
+    bst_printPreOrderFromRoot(tree->root);
+    printedFirst = false;
+    printf("\n");
+}
+
+void bst_printInOrderFromRoot(struct bstnode* root) {
+    if (root != NULL) {
+        bst_printInOrderFromRoot(root->l);
+        if (!printedFirst) {
+            printf("%d", root->val);
+            printedFirst = true;
+        } else {
+            printf(", %d", root->val);
+        }
+        bst_printInOrderFromRoot(root->r);
+    }
+}
+
+void bst_printInOrder(struct bstree* tree) {
+    bst_printInOrderFromRoot(tree->root);
+    printedFirst = false;
+    printf("\n");
+}
+
+void bst_printAfterOrderFromRoot(struct bstnode* root) {
+    if (root != NULL) {
+        bst_printAfterOrderFromRoot(root->l);
+        bst_printAfterOrderFromRoot(root->r);
+        if (!printedFirst) {
+            printf("%d", root->val);
+            printedFirst = true;
+        } else {
+            printf(", %d", root->val);
+        }
+    }
+}
+
+void bst_printAfterOrder(struct bstree* tree) {
+    bst_printAfterOrderFromRoot(tree->root);
+    printedFirst = false;
+    printf("\n");
 }
 
 void bst_destroyFromRoot(struct bstnode* root) {
