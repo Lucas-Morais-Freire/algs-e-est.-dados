@@ -4,12 +4,12 @@
 
 int main() {
     struct bstree* tree = bst_inicialize();
-    bst_insertRec(tree, 0);
-    bst_insertRec(tree, 2);
-    bst_insertRec(tree, 1);
-    bst_insertRec(tree, 3);
-    bst_insertRec(tree, -1);
-    bst_insertRec(tree, -2);
+    bst_insertIter(tree, 0);
+    bst_insertIter(tree, 2);
+    bst_insertIter(tree, 1);
+    bst_insertIter(tree, 3);
+    bst_insertIter(tree, -1);
+    bst_insertIter(tree, -2);
 
     bst_destroy(tree);
 

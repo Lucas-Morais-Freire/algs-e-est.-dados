@@ -56,6 +56,37 @@ void bst_insertRec(struct bstree* tree, int value) {
     tree->size++;
 }
 
+void bst_insertNodeIter(struct bstnode** pToRoot, struct bstnode* node) {
+    if ((*pToRoot) == NULL) {
+        (*pToRoot) = node;
+    } else {
+        struct bstnode** aux = pToRoot;
+        while(1) {
+            if (node->val >= (*aux)->val) {
+                if ((*aux)->r == NULL) {
+                    (*aux)->r = node;
+                    break;
+                } else {
+                    aux = &((*aux)->r);
+                }
+            } else {
+                if ((*aux)->l == NULL) {
+                    (*aux)->l = node;
+                    break;
+                } else {
+                    aux = &((*aux)->l);
+                }
+            }
+        }
+    }
+}
+
+void bst_insertIter(struct bstree* tree, int value) {
+    struct bstnode* newNode = bst_newNode(value);
+    bst_insertNodeIter(&(tree->root), newNode);
+    tree->size++;
+}
+
 void bst_destroyFromRoot(struct bstnode* root) {
     if (root->l != NULL) {
         bst_destroyFromRoot(root->l);
