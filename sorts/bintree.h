@@ -126,6 +126,43 @@ bool bst_searchIter(struct bstree* tree, int value) {
     return bst_searchFromRootIter(root, value);
 }
 
+int bst_minFromRoot(struct bstnode* root) {
+    if (root->l == NULL) {
+        return root->val;
+    }
+    return bst_minFromRoot(root->l);
+}
+
+int bst_min(struct bstree* tree) {
+    return bst_minFromRoot(tree->root);
+}
+
+int bst_maxFromRoot(struct bstnode* root) {
+    if (root->r == NULL) {
+        return root->val;
+    }
+    return bst_maxFromRoot(root->r);
+}
+
+int bst_max(struct bstree* tree) {
+    return bst_maxFromRoot(tree->root);
+}
+
+/* int bst_heightFromRoot(struct bstnode* root) {
+    if (root->l != NULL) {
+        return bst_heightFromRoot(root->l);
+    }
+    if (root->r != NULL) {
+        return bst_heightFromRoot(root->r)
+    }
+    
+}
+
+int bst_height(struct bstree* tree) {
+    int nIter = 0;
+    return bst_heightFromRoot(tree->root);
+} */
+
 void bst_printPreOrderFromRoot(struct bstnode* root) {
     if (root != NULL) {
         if (!printedFirst) {

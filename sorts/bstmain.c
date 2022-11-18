@@ -18,14 +18,8 @@ int main() {
     bst_insertIter(tree, -7);
 
     // bst_printPreOrder(tree);
-    bst_printInOrder(tree);
-    //bst_printAfterOrder(tree);
-
-    if (bst_searchIter(tree, 3)) {
-        printf("ye\n");
-    } else {
-        printf("nah\n");
-    }
+    //bst_printInOrder(tree);
+    bst_printAfterOrder(tree);
 
     bst_destroy(tree);
 
