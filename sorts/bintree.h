@@ -11,13 +11,13 @@ struct bstnode {
 };
 
 struct bstree {
-    int n;
+    int size;
     struct bstnode* root;
 };
 
 struct bstree* bst_inicialize() {
     struct bstree* tree = (struct bstree*)malloc(sizeof(struct bstree));
-    tree->n = 0;
+    tree->size = 0;
     tree->root = NULL;
     return tree;
 }
@@ -30,13 +30,45 @@ struct bstnode* bst_newNode(int value) {
     return newNode;
 }
 
-void bst_insertRec(struct bstnode** root, struct bstnode* node) {
-    if ((*root) == NULL) {
-        root = &(node);
-        return;
+void bst_insertNodeRec(struct bstnode** pToRoot, struct bstnode* node) {
+    if ((*pToRoot) == NULL) {
+        (*pToRoot) = node;
+    } else {
+        if (node->val >= (*pToRoot)->val) {
+            if ((*pToRoot)->r == NULL) {
+                (*pToRoot)->r = node;
+            } else {
+                bst_insertNodeRec(&((*pToRoot)->r), node);
+            }
+        } else {
+            if ((*pToRoot)->l == NULL) {
+                (*pToRoot)->l = node;
+            } else {
+                bst_insertNodeRec(&((*pToRoot)->l), node);
+            }
+        }
     }
+}
 
-    if ()
+void bst_insertRec(struct bstree* tree, int value) {
+    struct bstnode* newNode = bst_newNode(value);
+    bst_insertNodeRec(&(tree->root), newNode);
+    tree->size++;
+}
+
+void bst_destroyFromRoot(struct bstnode* root) {
+    if (root->l != NULL) {
+        bst_destroyFromRoot(root->l);
+    }
+    if (root->r != NULL) {
+        bst_destroyFromRoot(root->r);
+    }
+    free(root);
+}
+
+void bst_destroy(struct bstree* tree) {
+    bst_destroyFromRoot(tree->root);
+    free(tree);
 }
 
 #endif //BINTREE_H
