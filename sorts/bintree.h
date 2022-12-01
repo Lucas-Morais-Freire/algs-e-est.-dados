@@ -148,74 +148,79 @@ int bst_max(struct bstree* tree) {
     return bst_maxFromRoot(tree->root);
 }
 
-/* int bst_heightFromRoot(struct bstnode* root) {
-    if (root->l != NULL) {
-        return bst_heightFromRoot(root->l);
+int bst_heightFromNode(struct bstnode* node) {
+    int l, r;
+    if (node == NULL) {
+        return -1;
+    } else {
+        l = bst_heightFromNode(node->l);
+        r = bst_heightFromNode(node->r);
+        if (l > r) {
+            return l + 1;
+        } else {
+            return r + 1;
+        }
     }
-    if (root->r != NULL) {
-        return bst_heightFromRoot(root->r)
-    }
-    
 }
 
 int bst_height(struct bstree* tree) {
     int nIter = 0;
-    return bst_heightFromRoot(tree->root);
-} */
+    return bst_heightFromNode(tree->root);
+}
 
-void bst_printPreOrderFromRoot(struct bstnode* root) {
-    if (root != NULL) {
+void bst_printPreOrderFromNode(struct bstnode* node) {
+    if (node != NULL) {
         if (!printedFirst) {
-            printf("%d", root->val);
+            printf("%d", node->val);
             printedFirst = true;
         } else {
-            printf(", %d", root->val);
+            printf(", %d", node->val);
         }
-        bst_printPreOrderFromRoot(root->l);
-        bst_printPreOrderFromRoot(root->r);
+        bst_printPreOrderFromNode(node->l);
+        bst_printPreOrderFromNode(node->r);
     }
 }
 
 void bst_printPreOrder(struct bstree* tree) {
-    bst_printPreOrderFromRoot(tree->root);
+    bst_printPreOrderFromNode(tree->root);
     printedFirst = false;
     printf("\n");
 }
 
-void bst_printInOrderFromRoot(struct bstnode* root) {
-    if (root != NULL) {
-        bst_printInOrderFromRoot(root->l);
+void bst_printInOrderFromNode(struct bstnode* node) {
+    if (node != NULL) {
+        bst_printInOrderFromNode(node->l);
         if (!printedFirst) {
-            printf("%d", root->val);
+            printf("%d", node->val);
             printedFirst = true;
         } else {
-            printf(", %d", root->val);
+            printf(", %d", node->val);
         }
-        bst_printInOrderFromRoot(root->r);
+        bst_printInOrderFromNode(node->r);
     }
 }
 
 void bst_printInOrder(struct bstree* tree) {
-    bst_printInOrderFromRoot(tree->root);
+    bst_printInOrderFromNode(tree->root);
     printedFirst = false;
     printf("\n");
 }
 
-void bst_printAfterOrderFromRoot(struct bstnode* root) {
-    if (root != NULL) {
-        bst_printAfterOrderFromRoot(root->l);
-        bst_printAfterOrderFromRoot(root->r);
+void bst_printAfterOrderFromNode(struct bstnode* node) {
+    if (node != NULL) {
+        bst_printAfterOrderFromNode(node->l);
+        bst_printAfterOrderFromNode(node->r);
         if (!printedFirst) {
-            printf("%d", root->val);
+            printf("%d", node->val);
             printedFirst = true;
         } else {
-            printf(", %d", root->val);
+            printf(", %d", node->val);
         }
     }
 }
 
 void bst_printAfterOrder(struct bstree* tree) {
-    bst_printAfterOrderFromRoot(tree->root);
+    bst_printAfterOrderFromNode(tree->root);
     printedFirst = false;
     printf("\n");
 }
