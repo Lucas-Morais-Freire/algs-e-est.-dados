@@ -164,8 +164,41 @@ int bst_heightFromNode(struct bstnode* node) {
 }
 
 int bst_height(struct bstree* tree) {
-    int nIter = 0;
     return bst_heightFromNode(tree->root);
+}
+
+struct bstnode* bst_removeFromNode(int value, struct bstnode* node) {
+    struct bstnode* aux = NULL;
+    if (node->val == value) {
+        if (node->l == NULL && node ->r == NULL) {
+            free(node);
+            return NULL;
+        } else if (node->l != NULL && node->r == NULL) {
+            aux = node->l;
+            free(node);
+            return aux;
+        } else if (node->l == NULL && node->r != NULL) {
+            aux = node->r;
+            free(node);
+            return aux;
+        } else {
+            bst_insertNodeIter(&(node->l), node->r);
+            aux = node->l;
+            free(node);
+            return aux;
+        }
+    } else if (node->val < value) {
+        node->r = bst_removeFromNode(value, node->r);
+        return node;
+    } else {
+        node->l = bst_removeFromNode(value, node->l);
+        return node;
+    }
+}
+
+void bst_remove(int value, struct bstree* tree) {
+    tree->root = bst_removeFromNode(value, tree->root);
+    tree->size--;
 }
 
 void bst_printPreOrderFromNode(struct bstnode* node) {
@@ -223,6 +256,23 @@ void bst_printAfterOrder(struct bstree* tree) {
     bst_printAfterOrderFromNode(tree->root);
     printedFirst = false;
     printf("\n");
+}
+
+void bst_prettyPrintFromNode(struct bstnode* node, int ind) {
+    if(node != NULL) {
+        if(node->l) bst_prettyPrintFromNode(node->l, ind+4);
+        if(node->r) bst_prettyPrintFromNode(node->r, ind+4);
+        if (ind) {
+            for (int i = 0; i < ind; i++) {
+                printf(" ");
+            }
+        }
+        printf("%d\n ", node->val);
+    }
+}
+
+void bst_prettyPrint(struct bstree* tree) {
+    bst_prettyPrintFromNode(tree->root, 0);
 }
 
 void bst_destroyFromRoot(struct bstnode* root) {
