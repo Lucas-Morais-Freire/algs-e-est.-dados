@@ -11,6 +11,8 @@ struct avlnode {
     int val;
     struct avlnode* r;
     struct avlnode* l;
+    int bf;
+    int h;
 };
 
 struct bstavl {
@@ -29,11 +31,93 @@ struct avlnode* avl_newNode(int value) {
     struct avlnode* newNode = (struct avlnode*)malloc(sizeof(struct avlnode));
     newNode->r = NULL;
     newNode->l = NULL;
+    newNode->h = 0;
+    newNode->bf = 0;
     newNode->val = value;
     return newNode;
 }
 
-void avl_insertNodeRec(struct avlnode** pToRoot, struct avlnode* node) {
+int avl_heightFromNode(struct avlnode* node) {
+    if (node->l == NULL && node->r == NULL) {
+        return 0;
+    } else if (node->l != NULL && node->r == NULL) {
+        return node->l->h + 1;
+    } else if (node->l == NULL && node->r != NULL) {
+        return node->r->h + 1;
+    } else if (node->r->h >= node->l->h) {
+        return node->r->h + 1;
+    } else {
+        return node->l->h + 1;
+    }
+}
+
+int avl_height(struct bstavl* tree) {
+    return avl_heightFromNode(tree->root);
+}
+
+void avl_update(struct avlnode* node) {
+    node->h = avl_heightFromNode(node);
+    if (node->l == NULL && node->r == NULL) {
+        node->bf = 0;
+    } else if (node->l != NULL && node->r == NULL) {
+        node->bf = -node->l->h;
+    } else if (node->l == NULL && node->r != NULL) {
+        node->bf = node->r->h;
+    } else {
+        node->bf = node->r->h - node->l->h;
+    }
+}
+
+struct avlnode* avl_rotLeft(struct avlnode* node) {
+    struct avlnode* newRoot = node->r;
+    node->r = newRoot->l;
+    newRoot->l = node;
+    avl_update(node);
+    avl_update(newRoot);
+    return newRoot;
+}
+
+struct avlnode* avl_rotRight(struct avlnode* node) {
+    struct avlnode* newRoot = node->l;
+    node->l = newRoot->r;
+    newRoot->r = node;
+    avl_update(node);
+    avl_update(newRoot);
+    return newRoot;
+}
+
+struct avlnode* avl_rebalanceLL(struct avlnode* node) {
+    return avl_rotRight(node);
+}
+
+struct avlnode* avl_rebalanceLR(struct avlnode* node) {
+    node->l = avl_rotLeft(node->l);
+    return avl_rotRight(node);
+}
+
+struct avlnode* avl_rebalanceRR(struct avlnode* node) {
+    return avl_rotLeft(node);
+}
+
+struct avlnode* avl_rebalanceRL(struct avlnode* node) {
+    node->r = avl_rotRight(node->l);
+    return avl_rotLeft(node);
+}
+
+struct avlnode* avl_rebalance(struct avlnode* node) {
+    if (node->bf == 2 && node->r->bf == -1) {
+        return avl_rebalanceRL(node);
+    } else if (node->bf == 2) {
+        return avl_rebalanceRR(node);
+    } else if (node->bf == -2 && node->l->bf == 1) {
+        return avl_rebalanceLR(node);
+    } else if (node->bf == -2) {
+        return avl_rebalanceLL(node);
+    }
+    return node;
+}
+
+void avl_insertNode(struct avlnode* node, struct avlnode** pToRoot) {
     if ((*pToRoot) == NULL) {
         (*pToRoot) = node;
     } else {
@@ -41,52 +125,24 @@ void avl_insertNodeRec(struct avlnode** pToRoot, struct avlnode* node) {
             if ((*pToRoot)->r == NULL) {
                 (*pToRoot)->r = node;
             } else {
-                avl_insertNodeRec(&((*pToRoot)->r), node);
+                avl_insertNode(node, &((*pToRoot)->r));
             }
         } else {
             if ((*pToRoot)->l == NULL) {
                 (*pToRoot)->l = node;
             } else {
-                avl_insertNodeRec(&((*pToRoot)->l), node);
+                avl_insertNode(node, &((*pToRoot)->l));
             }
         }
     }
+
+    avl_update((*pToRoot));
+    (*pToRoot) = avl_rebalance((*pToRoot));
 }
 
-void avl_insertRec(struct bstavl* tree, int value) {
+void avl_insert(int value, struct bstavl* tree) {
     struct avlnode* newNode = avl_newNode(value);
-    avl_insertNodeRec(&(tree->root), newNode);
-    tree->size++;
-}
-
-void avl_insertNodeIter(struct avlnode** pToRoot, struct avlnode* node) {
-    if ((*pToRoot) == NULL) {
-        (*pToRoot) = node;
-    } else {
-        struct avlnode** aux = pToRoot;
-        while(1) {
-            if (node->val >= (*aux)->val) {
-                if ((*aux)->r == NULL) {
-                    (*aux)->r = node;
-                    break;
-                } else {
-                    aux = &((*aux)->r);
-                }
-            } else {
-                if ((*aux)->l == NULL) {
-                    (*aux)->l = node;
-                    break;
-                } else {
-                    aux = &((*aux)->l);
-                }
-            }
-        }
-    }
-}
-
-void avl_insertIter(struct bstavl* tree, int value) {
-    struct avlnode* newNode = avl_newNode(value);
-    avl_insertNodeIter(&(tree->root), newNode);
+    avl_insertNode(newNode, &(tree->root));
     tree->size++;
 }
 
@@ -148,50 +204,31 @@ int avl_max(struct bstavl* tree) {
     return avl_maxFromRoot(tree->root);
 }
 
-int avl_heightFromNode(struct avlnode* node) {
-    int l, r;
-    if (node == NULL) {
-        return -1;
-    } else {
-        l = avl_heightFromNode(node->l);
-        r = avl_heightFromNode(node->r);
-        if (l > r) {
-            return l + 1;
-        } else {
-            return r + 1;
-        }
-    }
-}
-
-int avl_height(struct bstavl* tree) {
-    return avl_heightFromNode(tree->root);
-}
-
 struct avlnode* avl_removeFromNode(int value, struct avlnode* node) {
     struct avlnode* aux = NULL;
     if (node->val == value) {
-        if (node->l == NULL && node ->r == NULL) {
-            free(node);
-            return NULL;
-        } else if (node->l != NULL && node->r == NULL) {
+        if (node->l != NULL && node->r == NULL) {
             aux = node->l;
-            free(node);
-            return aux;
         } else if (node->l == NULL && node->r != NULL) {
             aux = node->r;
-            free(node);
-            return aux;
-        } else {
-            avl_insertNodeIter(&(node->l), node->r);
-            aux = node->l;
-            free(node);
-            return aux;
+        } else if (node->l != NULL && node->r != NULL) {
+            aux = avl_newNode(avl_minFromRoot(node->r));
+            aux->r = avl_removeFromNode(aux->val, node->r);
+            aux->l = node->l;
+            avl_update(aux);
+            aux = avl_rebalance(aux);
         }
+        free(node);
+        return aux;
     } else if (node->val < value) {
         node->r = avl_removeFromNode(value, node->r);
+        avl_update(node);
+        node = avl_rebalance(node);
         return node;
     } else {
         node->l = avl_removeFromNode(value, node->l);
+        avl_update(node);
+        node = avl_rebalance(node);
         return node;
     }
 }
@@ -199,20 +236,6 @@ struct avlnode* avl_removeFromNode(int value, struct avlnode* node) {
 void avl_remove(int value, struct bstavl* tree) {
     tree->root = avl_removeFromNode(value, tree->root);
     tree->size--;
-}
-
-struct avlnode* rotLeft(struct avlnode* node) {
-    struct avlnode* newRoot = node->r;
-    node->r = newRoot->l;
-    newRoot->l = node;
-    return newRoot;
-}
-
-struct avlnode* rotRight(struct avlnode* node) {
-    struct avlnode* newRoot = node->l;
-    node->l = newRoot->r;
-    newRoot->r = node;
-    return newRoot;
 }
 
 void avl_printPreOrderFromNode(struct avlnode* node) {
@@ -281,7 +304,7 @@ void avl_prettyPrintFromNode(struct avlnode* node, int ind) {
                 printf(" ");
             }
         }
-        printf("%d\n ", node->val);
+        printf("%d(%d)(%d)\n ", node->val, node->h, node->bf);
     }
 }
 
