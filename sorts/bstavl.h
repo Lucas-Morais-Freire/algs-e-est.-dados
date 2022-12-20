@@ -100,7 +100,7 @@ struct avlnode* avl_rebalanceRR(struct avlnode* node) {
 }
 
 struct avlnode* avl_rebalanceRL(struct avlnode* node) {
-    node->r = avl_rotRight(node->l);
+    node->r = avl_rotRight(node->r);
     return avl_rotLeft(node);
 }
 
@@ -165,7 +165,9 @@ bool avl_searchRec(struct bstavl* tree, int value) {
 
 bool avl_searchFromRootIter(struct avlnode* root, int value) {
     while(1) {
-        if (root->val == value) {
+        if (root == NULL) {
+            return false;
+        } else if (root->val == value) {
             return true;
         } else if (root->r != NULL && value >= root->val) {
             root = root->r;
