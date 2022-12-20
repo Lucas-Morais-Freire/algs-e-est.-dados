@@ -7,11 +7,7 @@ int main() {
     for (int i = 15; i >= -15; i--) {
         avl_insert(i, tree);
     }
-    avl_prettyPrint(tree);
-
-    avl_remove(4, tree);
-
-    avl_prettyPrint(tree);
+    avl_prettierPrint(tree, 9);
 
     avl_destroy(tree);
 

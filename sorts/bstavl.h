@@ -312,6 +312,119 @@ void avl_prettyPrint(struct bstavl* tree) {
     avl_prettyPrintFromNode(tree->root, 0);
 }
 
+void avl_fillVector(struct avlnode* node, int* vals, int* pi) {
+    if (node != NULL) {
+        avl_fillVector(node->l, vals, pi);
+        vals[*pi] = node->val;
+        (*pi)++;
+        avl_fillVector(node->r, vals, pi);
+    }
+}
+
+int avl_distanceFromNode(int value, struct avlnode* node) {
+    if (node->val == value) {
+        return 0;
+    } else if (node->r != NULL && value >= node->val) {
+        return avl_distanceFromNode(value, node->r) + 1;
+    } else if (node->l != NULL && value < node->val) {
+        return avl_distanceFromNode(value, node->l) + 1;
+    } else {
+        return -1;
+    }
+}
+
+struct avlnode* avl_getFatherFromNode(int value, struct avlnode* node) {
+    if (node->val == value) {
+        return NULL;
+    } else if (node->r != NULL && node->r->val == value) {
+        return node;
+    } else if (node->l != NULL && node->l->val == value) {
+        return node;
+    } else if (node->r != NULL && value >= node->val) {
+        return avl_getFatherFromNode(value, node->r);
+    } else if (node->l != NULL && value < node->val) {
+        return avl_getFatherFromNode(value, node->l);
+    } else {
+        return NULL;
+    }
+}
+
+int numDigits(int n) {
+    if (n == 0) {
+        return 1;
+    }
+    int d = 0;
+    if (n < 0) {
+        d++;
+        n = -n;
+    }
+    while (n != 0) {
+        d++;
+        n /= 10;
+    }
+    return d;
+}
+
+void avl_prettierPrint(struct bstavl* tree, int maxBranchLength) {
+    int* vals = (int*)malloc((tree->size)*sizeof(int));
+    int i = 0;
+    int* pi = &i;
+    avl_fillVector(tree->root, vals, pi);
+    for (i = 0; i < tree->size; i++) {
+        for (int j = 0; j < tree->root->h - avl_distanceFromNode(vals[i], tree->root); j++) {
+            for (int k = 0; k < maxBranchLength; k++) {
+                printf(" ");
+            }
+        }
+        struct avlnode* father = avl_getFatherFromNode(vals[i], tree->root);
+        if (father == NULL) {
+            printf("%d<-[]\n", vals[i]);
+            continue;
+        }
+        bool right; bool right1; int aux;
+        if (father->r != NULL && father->r->val == vals[i]) {
+            right = true;
+            printf("%d", vals[i]);
+            for (int j = 0; j < maxBranchLength - numDigits(vals[i]); j++) {
+                printf("-");
+            }
+            printf("/");
+        } else {
+            right = false;
+            printf("%d", vals[i]);
+            for (int j = 0; j < maxBranchLength - numDigits(vals[i]); j++) {
+                printf("-");
+            }
+            printf("\\");
+        }
+        while (father != NULL) {
+            aux = father->val;
+            father = avl_getFatherFromNode(aux, tree->root);
+            if (father == NULL) {
+                break;
+            }
+            if (father->r != NULL && father->r->val == aux) {
+                right1 = true;
+            } else {
+                right1 = false;
+            }
+            if (right1 != right) {
+                for (int k = 0; k < maxBranchLength - 1; k++) {
+                    printf(" ");
+                }
+                printf("|");
+            } else {
+                for (int k = 0; k < maxBranchLength; k++) {
+                    printf(" ");
+                }
+            }
+            right = right1;
+        }
+        printf("\n");
+    }
+    free(vals);
+}
+
 void avl_destroyFromRoot(struct avlnode* root) {
     if (root->l != NULL) {
         avl_destroyFromRoot(root->l);
