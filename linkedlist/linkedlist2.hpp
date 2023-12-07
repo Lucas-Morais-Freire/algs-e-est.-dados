@@ -14,12 +14,12 @@ class LinkedList {
         node* head;
     public:
         LinkedList(); //
-        void insertElementAtEnd(int value);
-        void removeLastElement(); 
-        int getElementAtPosition(int pos); //
-        void insertElementAtPosition(int value, int pos); //
-        void updateElementAtPosition(int value, int pos); //
-        void removeElementAtPosition(int pos); //
+        void insertElementAtEnd(int value); // O(n)
+        void removeLastElement(); // O(n)
+        int getElementAtPosition(int pos); // O(n)
+        void insertElementAtPosition(int value, int pos); // O(n)
+        void updateElementAtPosition(int value, int pos); // O(n)
+        void removeElementAtPosition(int pos); // O(n)
         void showList();
         ~LinkedList();
 };
@@ -57,10 +57,22 @@ void LinkedList::removeLastElement() {
         exit(0);
     }
     node* temp = head;
-    for (int i = 1; i < size; i++) {
+    // for (int i = 1; i < size; i++) {
+    //     temp = temp->next;
+    // }
+
+    if (head->next == nullptr) {
+        delete head;
+        size--;
+        head = nullptr;
+        return;
+    }
+
+    while (temp->next->next != nullptr) {
         temp = temp->next;
     }
-    delete temp;
+    delete temp->next;
+    temp->next = nullptr;
     size--;
 }
 
@@ -77,7 +89,7 @@ int LinkedList::getElementAtPosition(int pos) {
 }
 
 void LinkedList::insertElementAtPosition(int value, int pos) {
-    if (pos > size || pos < 0) {
+    if (pos >= size || pos < 0) {
         std::cout << "Invalid list position.\n";
         return;
     }
@@ -90,7 +102,7 @@ void LinkedList::insertElementAtPosition(int value, int pos) {
         size++;
         return;
     }
-    for (int i = 0; i < pos; i++) {
+    for (int i = 1; i < pos; i++) {
         if (i == pos - 1) {
             target->next = temp->next;
             temp->next = target;

@@ -24,5 +24,8 @@ int main() {
     lista.atualizarElemento(-5, 15);
     lista.exibirLista();
 
+    lista.reverseList();
+    lista.exibirLista();
+
     return 0;
 }

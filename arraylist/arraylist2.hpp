@@ -21,6 +21,7 @@ class Arraylist {
         void exibirLista(); // O(n)
         int size();
         int capacity();
+        void reverseList();
         ~Arraylist();
 };
 
@@ -119,6 +120,25 @@ void Arraylist::exibirLista() {
 
 Arraylist::~Arraylist() {
     delete[] vetor;
+}
+
+void Arraylist::reverseList() {
+    // int* aux = new int[qtdade];
+    // int j = 0;
+    // for (int i = qtdade - 1; i >= 0; i--)
+    // {
+    //     aux[j] = vetor[i];
+    //     j++;
+    // }
+    // delete[] vetor;
+    // vetor = aux;
+
+    int temp;
+    for (int i = 0; i < qtdade; i--) {
+        temp = vetor[i];
+        vetor[i] = vetor[qtdade - 1 - i];
+        vetor[qtdade - 1 - i] = temp;
+    }
 }
 
 #endif //ARRAYLIST2_HPP
