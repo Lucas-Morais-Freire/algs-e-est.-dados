@@ -193,53 +193,75 @@ public:
     }
 
     /* Auxiliary functions for DFS and BFS */
-    void dfsVisit(Vertex<T> *v, vector<T> & res) const {
+    void dfsVisit(Vertex<T> *v, std::vector<T> & res) const {
         v->visited = true;
         res.push_back(v->info);
-        for (auto & e : v->adj) {
-            auto w = e.dest;
-            if ( ! w->visited)
-            dfsVisit(w, res);
+
+        // for e in v->adj:
+
+        std::vector<Edge<T>>::iterator iter = v->adj.begin();
+        while (iter != v->adj.end()) {
+            Vertex<T>* w = iter->getDest();
+            if (!w->visited)
+                dfsVisit(w, res);
+            
+            iter++;
         }
     }
 
     /*
     * Performs a DFS in a graph (this). Returns a vector with the
     * contents of the vertices by DFS order, from the source node. */
-    dfs(const T & source) const {
+    std::vector<T> dfs(const T & source) const {
         std::vector<T> res;
-        Vertex<T>* s = findVertex(source);
+        Vertex<T>* s = this->findVertex(source);
         if (s == nullptr)
             return res;
-        for (auto v : vertexSet)
+
+        std::vectr<Vertex<T>*>::iterator iter = vertexSet.bein();
+        while (iter != vertexSet.end()) {
             v->visited = false;
+            iter++;
+        }
+
         dfsVisit(s, res);
-    return res;
+        return res;
     }
     /* Performs a BFS in a graph (this), starting at (source).
     * Returns a vector with vertices’ contents by DFS order. */
-    bfs(const T & source) const {
+    std::vector<T> bfs(const T & source) const {
         std::vector<T> res;
-        Vertex<T>* s = findVertex(source);
+        Vertex<T>* s = this->findVertex(source);
         if (s == NULL)
             return res;
-        std::queue<Vertex<T> *> q;
-        for (auto v : vertexSet)
+
+        std::queue<Vertex<T>*> q;
+        std::vector<Vertex<T>*>::iterator iter = vertexSet.begin();
+        while (iter != vertexSet.end()) {
             v->visited = false;
+
+            iter++;
+        }
+
         q.push(s);
         s->visited = true;
+        std::vector<Edge<T>>::iterator iter;
         while (!q.empty()) {
-            auto v = q.front();
+            Vertex<T>* v = q.front();
             q.pop();
             res.push_back(v->info);
-            for (auto & e : v->adj) {
-                auto w = e.dest;
-                if ( ! w->visited ) {
+            iter = v->adj.begin();
+            while (iter != v->adj.end()) {
+                Vertex<T>* w = iter->getDest();
+                if (!w->visited) {
                     q.push(w);
                     w->visited = true;
                 }
+
+                iter++;
             }
         }
+        
         return res;
     }
 };
