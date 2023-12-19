@@ -14,21 +14,23 @@ class DoublyLinkedList {
         int size;
         node* head;
         node* tail;
+        
+        node* allocateNewNode(int value);
     public:
         DoublyLinkedList();
         int getSize();
-        void insertElementAtBeginning(int value);
-        void insertElementAtEnd(int value);
-        void insertElementAtPosition(int value, int pos);
-        int getElementAtPosition(int pos);
-        void updateElementAtPosition(int value, int pos);
-        void removeElementAtPosition(int pos);
+        void insertElementAtBeginning(int value); // O(1)
+        void insertElementAtEnd(int value);       // O(1)
+        void insertElementAtPosition(int value, int pos); // O(n)
+        int getElementAtPosition(int pos);                // O(n)
+        void updateElementAtPosition(int value, int pos); // O(n)
+        void removeElementAtPosition(int pos);            // O(n)
         void showList();
         void invertList();
         ~DoublyLinkedList();
 };
 
-node* allocateNewNode(int value) {
+node* DoublyLinkedList::allocateNewNode(int value) {
     node* newNode = new node;
     newNode->val = value;
     return newNode;
@@ -36,8 +38,8 @@ node* allocateNewNode(int value) {
 
 DoublyLinkedList::DoublyLinkedList() {
     size = 0;
-    head = NULL;
-    tail = NULL;
+    head = nullptr;
+    tail = nullptr;
 }
 
 int DoublyLinkedList::getSize() {
@@ -49,13 +51,13 @@ void DoublyLinkedList::insertElementAtBeginning(int value) {
     if (size == 0) {
         head = newNode;
         tail = newNode;
-        newNode->next = NULL;
-        newNode->prev = NULL;
+        newNode->next = nullptr;
+        newNode->prev = nullptr;
         size++;
         return;
     }
     newNode->next = head;
-    newNode->prev = NULL;
+    newNode->prev = nullptr;
     head->prev = newNode;
     head = newNode;
     size++;
@@ -68,7 +70,7 @@ void DoublyLinkedList::insertElementAtEnd(int value) {
     }
     node* newNode = allocateNewNode(value);
     tail->next = newNode;
-    newNode->next = NULL;
+    newNode->next = nullptr;
     newNode->prev = tail;
     tail = newNode;
     size++;
@@ -79,6 +81,7 @@ void DoublyLinkedList::insertElementAtPosition(int value, int pos) {
         std::cout << "invalid list position\n";
         exit(-1);
     }
+
     if (pos == 0) {
         this->insertElementAtBeginning(value);
     } else if (pos == size) {
@@ -86,7 +89,7 @@ void DoublyLinkedList::insertElementAtPosition(int value, int pos) {
     } else {
         node* temp;
         node* newNode = allocateNewNode(value);
-        if (size > pos << 1) {
+        if (size > pos << 1) { // pos < size/2
             temp = head;
             for (int i = 0; i < pos; i++) {
                 temp = temp->next;
@@ -116,7 +119,7 @@ int DoublyLinkedList::getElementAtPosition(int pos) {
         return tail->val;
     } else {
         node* temp;
-        if (size > pos << 1) {
+        if (size > pos << 1) { // pos < size/2
             temp = head;
             for (int i = 0; i < pos; i++) {
                 temp = temp->next;
@@ -143,7 +146,7 @@ void DoublyLinkedList::updateElementAtPosition(int value, int pos) {
         tail->val = value;
     } else {
         node* temp;
-        if (size > pos << 1) {
+        if (size > pos << 1) { // pos < size/2
             temp = head;
             for (int i = 0; i < pos; i++) {
                 temp = temp->next;
@@ -167,14 +170,14 @@ void DoublyLinkedList::removeElementAtPosition(int pos) {
     if (pos == 0) {
         head = head->next;
         delete head->prev;
-        head->prev = NULL;
+        head->prev = nullptr;
     } else if (pos == size - 1) {
         tail = tail->prev;
         delete tail->next;
-        tail->next = NULL;
+        tail->next = nullptr;
     } else {
         node* temp;
-        if (size > pos << 1) {
+        if (size > pos << 1) { // pos < size/2
             temp = head;
             for (int i = 0; i < pos; i++) {
                 temp = temp->next;
